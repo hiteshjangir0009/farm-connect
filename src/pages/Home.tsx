@@ -182,7 +182,7 @@ const Home = () => {
             <div className="mb-8 md:mb-0">
               <div className="flex items-center space-x-2 mb-4">
                 <Wheat className="h-6 w-6 text-wheat-600" />
-                <span className="font-bold text-xl">Grain Grove</span>
+                <span className="font-bold text-xl">Farm Connect</span>
               </div>
               <p className="text-muted-foreground max-w-xs">
                 Providing premium quality grains from sustainable farms to your table since 2010.
@@ -220,7 +220,7 @@ const Home = () => {
           </div>
           
           <div className="border-t border-border/60 mt-12 pt-6 text-center text-muted-foreground text-sm">
-            &copy; {new Date().getFullYear()} Grain Grove. All rights reserved.
+            &copy; {new Date().getFullYear()} Farm Connect. All rights reserved.
           </div>
         </div>
       </footer>

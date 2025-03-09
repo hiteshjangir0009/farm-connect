@@ -55,7 +55,7 @@ const Navbar = () => {
           className="flex items-center space-x-2 transition-transform duration-300 hover:scale-105"
         >
           <Wheat className="h-7 w-7 text-wheat-600" />
-          <span className="font-bold text-xl text-foreground">Grain Grove</span>
+          <span className="font-bold text-xl text-foreground">Farm Connect</span>
         </Link>
         
         {/* Desktop Navigation */}
