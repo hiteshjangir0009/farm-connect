@@ -3,7 +3,7 @@ import React from 'react';
 import { CartItem as CartItemType } from '@/services/supabase';
 import { useCart } from '@/context/CartContext';
 import { Button } from '@/components/ui/button';
-import { Trash, Plus, Minus } from 'lucide-react';
+import { Trash, Plus, Minus, IndianRupee } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CartItemProps {
@@ -51,7 +51,10 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       {/* Product details */}
       <div className="flex-grow">
         <h3 className="font-medium text-foreground">{item.name}</h3>
-        <p className="text-muted-foreground text-sm">${item.price.toFixed(2)} each</p>
+        <p className="text-muted-foreground text-sm flex items-center">
+          <IndianRupee className="h-3 w-3 mr-1" />
+          {item.price.toFixed(2)} each
+        </p>
       </div>
       
       {/* Quantity controls */}
@@ -80,7 +83,10 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
       
       {/* Item total */}
       <div className="w-24 text-right">
-        <p className="font-semibold">${itemTotal.toFixed(2)}</p>
+        <p className="font-semibold flex items-center justify-end">
+          <IndianRupee className="h-3 w-3 mr-1" />
+          {itemTotal.toFixed(2)}
+        </p>
       </div>
       
       {/* Remove button */}

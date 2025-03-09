@@ -14,6 +14,9 @@ import Cart from "@/pages/Cart";
 import Checkout from "@/pages/Checkout";
 import NotFound from "@/pages/NotFound";
 
+// Set document title to Farm Connect
+document.title = "Farm Connect - Direct from Farmers to Your Table";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {

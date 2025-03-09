@@ -1,121 +1,149 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import CartItem from '@/components/CartItem';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, ArrowRight, Trash2, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { AlertCircle, ShoppingCart, Wheat, IndianRupee } from 'lucide-react';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 
 const Cart = () => {
-  const { cart, clearCart, subtotal, itemCount } = useCart();
+  const navigate = useNavigate();
+  const { cart, clearCart, subtotal } = useCart();
   
-  // Calculate shipping (free above $50)
-  const shipping = subtotal < 50 && subtotal > 0 ? 10 : 0;
+  // Calculate shipping (free above ₹3000)
+  const shipping = subtotal < 3000 && subtotal > 0 ? 250 : 0;
   
   // Calculate total
   const total = subtotal + shipping;
   
-  // Format currency
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`;
-  };
-  
   return (
     <div className="page-transition pt-24 pb-16">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
+        <h1 className="text-3xl font-bold mb-8">Your Shopping Cart</h1>
         
         {cart.length === 0 ? (
-          <div className="text-center py-16 max-w-md mx-auto">
-            <div className="mb-6 text-muted-foreground">
-              <ShoppingCart className="h-16 w-16 mx-auto opacity-30" />
+          <div className="text-center py-16">
+            <div className="mb-4">
+              <ShoppingCart className="h-16 w-16 mx-auto text-muted-foreground opacity-30" />
             </div>
-            <h2 className="text-2xl font-semibold mb-2">Your cart is empty</h2>
-            <p className="text-muted-foreground mb-8">
+            <h2 className="text-2xl font-semibold mb-4">Your cart is empty</h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
               Looks like you haven't added any products to your cart yet.
+              Browse our selection of premium farm products and find something you'll love.
             </p>
-            <Button asChild className="btn-hover">
-              <Link to="/products">Browse Products</Link>
+            <Button 
+              onClick={() => navigate('/products')} 
+              size="lg"
+              className="animate-fadeIn"
+            >
+              <Wheat className="mr-2 h-5 w-5" />
+              Browse Products
             </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
-            <div className="col-span-2">
-              <div className="bg-card rounded-lg border border-border/50 overflow-hidden">
-                <div className="p-6 flex justify-between">
-                  <h2 className="text-xl font-semibold">Cart Items ({itemCount})</h2>
-                  <Button 
-                    variant="ghost" 
-                    className="text-muted-foreground hover:text-destructive"
-                    onClick={clearCart}
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Clear Cart
-                  </Button>
-                </div>
-                
-                <Separator />
-                
-                <div className="p-6">
-                  {cart.map(item => (
-                    <CartItem key={item.id} item={item} />
-                  ))}
-                </div>
-              </div>
+            <div className="lg:col-span-2">
+              <Card>
+                <CardContent className="p-6">
+                  <div className="mb-4 flex justify-between">
+                    <h2 className="text-xl font-semibold">
+                      {cart.length} {cart.length === 1 ? 'Item' : 'Items'}
+                    </h2>
+                    <Button
+                      variant="ghost"
+                      onClick={clearCart}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      Clear Cart
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    {cart.map(item => (
+                      <CartItem key={item.id} item={item} />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
             
             {/* Order Summary */}
-            <div className="col-span-1">
-              <div className="bg-card rounded-lg border border-border/50 overflow-hidden sticky top-24">
-                <div className="p-6">
+            <div className="lg:col-span-1">
+              <Card className="sticky top-24">
+                <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
                   
-                  <div className="space-y-3 mb-6">
+                  <div className="space-y-3">
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Subtotal</span>
-                      <span>{formatCurrency(subtotal)}</span>
+                      <span className="flex items-center">
+                        <IndianRupee className="h-3 w-3 mr-1" />
+                        {subtotal.toFixed(2)}
+                      </span>
                     </div>
                     
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Shipping</span>
-                      <span>
-                        {shipping === 0 ? 'Free' : formatCurrency(shipping)}
+                      <span className="flex items-center">
+                        {shipping === 0 ? (
+                          'Free'
+                        ) : (
+                          <>
+                            <IndianRupee className="h-3 w-3 mr-1" />
+                            {shipping.toFixed(2)}
+                          </>
+                        )}
                       </span>
                     </div>
                     
-                    <Separator className="my-2" />
+                    <div className="pt-2">
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {subtotal < 3000 ? (
+                          <>
+                            Add <span className="font-medium">
+                              <IndianRupee className="h-3 w-3 inline-block" />
+                              {(3000 - subtotal).toFixed(2)}
+                            </span> more for free shipping
+                          </>
+                        ) : (
+                          'You have qualified for free shipping!'
+                        )}
+                      </p>
+                      
+                      <div className="w-full bg-secondary h-2 rounded-full overflow-hidden">
+                        <div 
+                          className="bg-primary h-full transition-all duration-500"
+                          style={{ 
+                            width: `${Math.min(100, (subtotal / 3000) * 100)}%`
+                          }}
+                        />
+                      </div>
+                    </div>
                     
-                    <div className="flex justify-between font-semibold text-lg">
+                    <Separator />
+                    
+                    <div className="flex justify-between pt-2 font-semibold text-lg">
                       <span>Total</span>
-                      <span>{formatCurrency(total)}</span>
+                      <span className="flex items-center">
+                        <IndianRupee className="h-4 w-4 mr-1" />
+                        {total.toFixed(2)}
+                      </span>
                     </div>
                   </div>
-                  
-                  {subtotal < 50 && (
-                    <Alert className="mb-4 bg-primary/5 text-primary border-primary/20">
-                      <AlertCircle className="h-4 w-4" />
-                      <AlertTitle>Free Shipping</AlertTitle>
-                      <AlertDescription>
-                        Add {formatCurrency(50 - subtotal)} more to qualify for free shipping.
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                  
-                  <Button asChild className="w-full btn-hover mb-3">
-                    <Link to="/checkout">
-                      Proceed to Checkout
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
+                </CardContent>
+                <CardFooter className="p-6 pt-0">
+                  <Button 
+                    onClick={() => navigate('/checkout')}
+                    className="w-full"
+                    size="lg"
+                  >
+                    Proceed to Checkout
                   </Button>
-                  
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to="/products">Continue Shopping</Link>
-                  </Button>
-                </div>
-              </div>
+                </CardFooter>
+              </Card>
             </div>
           </div>
         )}

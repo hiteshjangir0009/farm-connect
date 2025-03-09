@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Truck,
   AlertCircle,
-  Loader2 
+  Loader2,
+  IndianRupee 
 } from 'lucide-react';
 import { 
   Card,
@@ -54,8 +55,8 @@ const Checkout = () => {
   // Form validation errors
   const [errors, setErrors] = useState<FormErrors>({});
   
-  // Shipping calculation (free above $50)
-  const shipping = subtotal < 50 && subtotal > 0 ? 10 : 0;
+  // Shipping calculation (free above ₹3000)
+  const shipping = subtotal < 3000 && subtotal > 0 ? 250 : 0;
   
   // Calculate total
   const total = subtotal + shipping;
@@ -96,9 +97,9 @@ const Checkout = () => {
       newErrors.email = 'Please enter a valid email address';
     }
     
-    // ZIP/Postal code (simple 5-digit validation)
-    if (formData.zip && !/^\d{5}(-\d{4})?$/.test(formData.zip)) {
-      newErrors.zip = 'Please enter a valid ZIP code';
+    // ZIP/Postal code (simple 6-digit validation for Indian PIN codes)
+    if (formData.zip && !/^\d{6}$/.test(formData.zip)) {
+      newErrors.zip = 'Please enter a valid 6-digit PIN code';
     }
     
     // Card number (simple validation for 16 digits)
@@ -201,7 +202,12 @@ const Checkout = () => {
   
   // Format currency
   const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`;
+    return (
+      <span className="flex items-center">
+        <IndianRupee className="h-3 w-3 mr-1" />
+        {amount.toFixed(2)}
+      </span>
+    );
   };
   
   if (orderComplete) {
@@ -366,7 +372,7 @@ const Checkout = () => {
                       </div>
                       
                       <div className="grid gap-2">
-                        <Label htmlFor="zip">ZIP Code</Label>
+                        <Label htmlFor="zip">PIN Code</Label>
                         <Input
                           id="zip"
                           name="zip"
@@ -514,13 +520,15 @@ const Checkout = () => {
                         </div>
                         <div className="flex-grow">
                           <p className="font-medium text-sm">{item.name}</p>
-                          <p className="text-muted-foreground text-sm">
-                            {item.quantity} × ${item.price.toFixed(2)}
+                          <p className="text-muted-foreground text-sm flex items-center">
+                            {item.quantity} × <IndianRupee className="h-3 w-3 mx-1" />
+                            {item.price.toFixed(2)}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium">
-                            ${(item.quantity * item.price).toFixed(2)}
+                          <p className="font-medium flex items-center justify-end">
+                            <IndianRupee className="h-3 w-3 mr-1" />
+                            {(item.quantity * item.price).toFixed(2)}
                           </p>
                         </div>
                       </div>
@@ -544,7 +552,10 @@ const Checkout = () => {
                     
                     <div className="flex justify-between font-semibold text-lg pt-2">
                       <span>Total</span>
-                      <span>{formatCurrency(total)}</span>
+                      <span className="flex items-center">
+                        <IndianRupee className="h-4 w-4 mr-1" />
+                        {total.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
