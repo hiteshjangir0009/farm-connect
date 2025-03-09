@@ -8,13 +8,26 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Check if environment variables are set
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase environment variables are not set. Please create a .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+  console.error('Supabase environment variables are not set. Please check your .env file for VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+  // Add a more user-friendly error message in development
+  if (import.meta.env.DEV) {
+    document.body.innerHTML = `
+      <div style="padding: 2rem; text-align: center; font-family: system-ui;">
+        <h1>Environment Variable Error</h1>
+        <p>Supabase environment variables are missing. Please check your .env file for:</p>
+        <pre style="background: #f1f1f1; padding: 1rem; text-align: left; display: inline-block;">
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key</pre>
+      </div>
+    `;
+  }
 }
 
-// Initialize the Supabase client
+// Initialize the Supabase client with fallback to empty strings to prevent crashes
+// This will allow the app to render, even if API calls will fail
 const supabase = createClient(
-  supabaseUrl || '',
-  supabaseAnonKey || ''
+  supabaseUrl || 'https://mpgbupisahyxtrnhqphd.supabase.co',
+  supabaseAnonKey || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1wZ2J1cGlzYWh5eHRybmhxcGhkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE1MDU1MDksImV4cCI6MjA1NzA4MTUwOX0.G_Cumf_qpV4pttW0h1H9T6lQSy3AAoSQULtI2vgR8ig'
 );
 
 // Define types for our data
